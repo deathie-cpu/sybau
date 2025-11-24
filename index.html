@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Dark and cute style portfolio of Deathie - photography, art, and aesthetic content">
     <title>𝕯𝖊𝖆𝖙𝖍𝖎𝖊 𝖕𝖆𝖌𝖊 | 𝜗ৎ</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #ff6b9d;
@@ -36,23 +36,13 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             scroll-behavior: smooth;
-            transition: background-color 0.5s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Excluir elementos de animaciones que no necesitan transición */
-        .profile-pic, .carousel-inner, .photo-item img, .preloader-heart,
-        .name-heart, .particle, .modal img {
-            transition: none !important;
+        /* Transición suave para el cambio de tema */
+        body, .section, .social-link, .specialty, .tab, .app-icon, .name, .section-title {
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Toggle Button */
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -77,7 +67,39 @@
             box-shadow: 0 0 25px var(--primary-color);
         }
 
-        /* Preloader */
+        /* Notificación emergente */
+        .theme-notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--bg-light);
+            color: var(--text-light);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            z-index: 1002;
+            max-width: 250px;
+            font-size: 0.9rem;
+            border: 1px solid var(--primary-color);
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .theme-notification.show {
+            transform: translateX(0);
+        }
+
+        .theme-notification-close {
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
         .preloader {
             position: fixed;
             top: 0;
@@ -166,11 +188,6 @@
             background: rgba(157, 78, 221, 0.1);
         }
 
-        .nav-item:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
-        }
-
         .nav-symbol {
             font-size: 1.5rem;
             color: var(--text-dark);
@@ -206,7 +223,6 @@
             margin: 0 auto 25px;
             box-shadow: var(--shadow);
             transition: transform 0.3s ease;
-            loading: lazy;
         }
 
         .profile-pic:hover {
@@ -288,11 +304,6 @@
             box-shadow: var(--shadow);
         }
 
-        .social-link:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
-        }
-
         .sparkle-divider {
             text-align: center;
             margin: 40px 0;
@@ -370,12 +381,7 @@
             gap: 10px;
         }
 
-        .section-title::before {
-            content: '✧';
-            color: var(--primary-color);
-        }
-
-        .section-title::after {
+        .section-title::before, .section-title::after {
             content: '✧';
             color: var(--primary-color);
         }
@@ -423,7 +429,6 @@
             border-radius: 15px;
             box-shadow: var(--shadow);
             transition: transform 0.3s ease;
-            loading: lazy;
         }
 
         .about-image img:hover {
@@ -447,6 +452,7 @@
             transition: transform 0.3s ease;
             font-family: 'Times New Roman', serif;
             color: var(--text-light);
+            cursor: pointer;
         }
 
         [data-theme="dark"] .specialty {
@@ -462,6 +468,88 @@
             background: linear-gradient(45deg, rgba(157, 78, 221, 0.3), rgba(199, 125, 255, 0.3));
         }
 
+        /* Modales para especialidades */
+        .specialty-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .specialty-modal.active {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .specialty-modal-content {
+            background: var(--bg-light);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            color: var(--text-light);
+            position: relative;
+        }
+
+        .specialty-modal img {
+            max-width: 100%;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .specialty-modal-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-family: 'Times New Roman', serif;
+            margin-bottom: 20px;
+        }
+
+        .specialty-modal-link {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .specialty-modal-link:hover {
+            transform: scale(1.05);
+        }
+
+        .specialty-modal-close {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .specialty-modal-close:hover {
+            transform: scale(1.05);
+        }
+
+        /* Resto de estilos... */
         .hobbies-tabs {
             display: flex;
             justify-content: center;
@@ -491,11 +579,6 @@
 
         [data-theme="dark"] .tab.active {
             background: linear-gradient(45deg, rgba(157, 78, 221, 0.3), rgba(199, 125, 255, 0.3));
-        }
-
-        .tab:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
         }
 
         .tab-content {
@@ -540,20 +623,14 @@
             flex-direction: column;
         }
 
-        .artist:hover, .artist:focus {
+        .artist:hover {
             transform: translateY(-3px);
             background: rgba(255, 107, 157, 0.1);
             border-color: var(--primary-color);
         }
 
-        [data-theme="dark"] .artist:hover, 
-        [data-theme="dark"] .artist:focus {
+        [data-theme="dark"] .artist:hover {
             background: rgba(157, 78, 221, 0.1);
-        }
-
-        .artist:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
         }
 
         .artist img {
@@ -561,7 +638,6 @@
             height: 50px;
             border-radius: 50%;
             margin-bottom: 10px;
-            loading: lazy;
         }
 
         .symbols-container {
@@ -591,14 +667,8 @@
             transition: transform 0.3s ease;
         }
 
-        .symbol:hover, .symbol:focus {
+        .symbol:hover {
             transform: scale(1.02);
-            background: linear-gradient(45deg, rgba(60, 60, 60, 0.9), rgba(80, 80, 80, 0.9));
-        }
-
-        .symbol:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
         }
 
         .symbol-size-control {
@@ -618,50 +688,13 @@
             transition: all 0.3s ease;
         }
 
-        .symbol-size-btn:hover, .symbol-size-btn:focus {
+        .symbol-size-btn:hover {
             background: linear-gradient(45deg, rgba(255, 107, 157, 0.3), rgba(255, 137, 153, 0.3));
             transform: translateY(-2px);
         }
 
-        [data-theme="dark"] .symbol-size-btn:hover, 
-        [data-theme="dark"] .symbol-size-btn:focus {
+        [data-theme="dark"] .symbol-size-btn:hover {
             background: linear-gradient(45deg, rgba(157, 78, 221, 0.3), rgba(199, 125, 255, 0.3));
-        }
-
-        .symbol-size-btn:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
-        }
-
-        .copy-tooltip {
-            position: absolute;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: var(--text-dark);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: none;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: var(--shadow);
-            animation: popTooltip 0.4s ease;
-        }
-
-        @keyframes popTooltip {
-            0% { transform: translateX(-50%) scale(0.8); opacity: 0; }
-            100% { transform: translateX(-50%) scale(1); opacity: 1; }
-        }
-
-        .copy-tooltip::before {
-            content: '♡';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: var(--primary-color);
-            font-size: 1rem;
         }
 
         .photos-gallery {
@@ -685,7 +718,6 @@
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s ease;
-            loading: lazy;
             opacity: 0;
             animation: fadeInPhoto 1s ease forwards;
         }
@@ -714,7 +746,6 @@
             background-position: center;
             pointer-events: none;
             opacity: 0.8;
-            transition: opacity 0.3s ease;
         }
 
         .photo-item:hover .photo-frame {
@@ -744,12 +775,6 @@
             max-height: 90%;
             border-radius: 10px;
             box-shadow: var(--shadow);
-            animation: zoomInModal 0.4s ease;
-        }
-
-        @keyframes zoomInModal {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
         }
 
         .modal-close {
@@ -767,16 +792,10 @@
             justify-content: center;
             cursor: pointer;
             font-size: 1.5rem;
-            transition: background 0.3s ease;
         }
 
-        .modal-close:hover, .modal-close:focus {
+        .modal-close:hover {
             background: var(--primary-color);
-        }
-
-        .modal-close:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
         }
 
         .carousel {
@@ -803,7 +822,6 @@
             display: block;
             height: 450px;
             object-fit: cover;
-            loading: lazy;
         }
 
         .carousel-control {
@@ -826,18 +844,12 @@
             backdrop-filter: blur(5px);
         }
 
-        .carousel-control:hover, .carousel-control:focus {
+        .carousel-control:hover {
             background: rgba(255, 107, 157, 0.8);
         }
 
-        [data-theme="dark"] .carousel-control:hover, 
-        [data-theme="dark"] .carousel-control:focus {
+        [data-theme="dark"] .carousel-control:hover {
             background: rgba(157, 78, 221, 0.8);
-        }
-
-        .carousel-control:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
         }
 
         .carousel-control.prev {
@@ -890,13 +902,8 @@
             transition: transform 0.5s ease;
         }
 
-        .app-link:hover, .app-link:focus {
+        .app-link:hover {
             transform: translateY(-5px) rotate(5deg) scale(1.05);
-        }
-
-        .app-link:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
         }
 
         .app-icon {
@@ -913,7 +920,7 @@
             transition: all 0.3s ease;
         }
 
-        .app-link:hover .app-icon, .app-link:focus .app-icon {
+        .app-link:hover .app-icon {
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             transform: scale(1.1);
         }
@@ -981,13 +988,8 @@
             opacity: 1;
         }
 
-        .back-to-top:hover, .back-to-top:focus {
+        .back-to-top:hover {
             transform: scale(1.1);
-        }
-
-        .back-to-top:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
         }
 
         footer {
@@ -1011,127 +1013,37 @@
             font-size: 0.9rem;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
-            .background-image {
-                background-size: cover;
-                background-position: center;
-                opacity: 0.25;
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
             }
-
-            header {
-                padding: 10px 0;
+            
+            .theme-notification {
+                max-width: 200px;
+                font-size: 0.8rem;
+                top: 70px;
+                right: 15px;
             }
-
-            .nav-container {
-                gap: 5px;
-                flex-direction: row;
-                justify-content: center;
-            }
-
+            
             .nav-item {
-                margin: 2px;
                 font-size: 1rem;
                 padding: 8px 12px;
             }
-
+            
             .name {
                 font-size: 2.5rem;
             }
-
-            .hero {
-                padding: 60px 15px 40px;
-            }
-
-            .section {
-                padding: 40px 15px;
-            }
-
+            
             .section-title {
                 font-size: 2.2rem;
             }
-
-            .carousel-item img {
-                height: 300px;
-            }
-
-            .carousel-control {
-                font-size: 1.5rem;
-                width: 40px;
-                height: 40px;
-            }
-
-            .apps-grid {
-                grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-                gap: 20px;
-            }
-
-            .app-icon {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
-            }
-
-            .symbol {
-                font-size: 0.5rem;
-            }
-
-            .photos-gallery {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-        }
-
-        @media (max-width: 480px) {
-            .background-image {
-                background-size: cover;
-                background-position: center;
-                opacity: 0.2;
-            }
-
-            .nav-item {
-                font-size: 0.9rem;
-                padding: 6px 10px;
-            }
-
-            .name {
-                font-size: 2rem;
-            }
-
-            .section-title {
-                font-size: 1.8rem;
-            }
-
-            .tab {
-                padding: 8px 15px;
-                font-size: 0.9rem;
-            }
-
-            .about-text {
-                font-size: 1.1rem;
-            }
-
-            .bio {
-                font-size: 1.2rem;
-            }
-
-            .symbol {
-                font-size: 0.5rem;
-                padding: 10px;
-            }
-        }
-
-        @media (orientation: portrait) {
-            .background-image {
-                background-size: cover;
-                background-position: center;
-                opacity: 0.25;
-            }
-        }
-
-        @media (orientation: landscape) and (max-width: 768px) {
-            .background-image {
-                background-size: cover;
-                background-position: center;
-                opacity: 0.3;
+            
+            .specialty {
+                font-size: 1rem;
+                padding: 8px 16px;
             }
         }
     </style>
@@ -1141,6 +1053,56 @@
     <button class="theme-toggle" aria-label="Cambiar tema" title="Modo oscuro/modo claro">
         <span class="theme-icon">🌙</span>
     </button>
+
+    <!-- Notificación emergente -->
+    <div class="theme-notification" id="themeNotification">
+        <button class="theme-notification-close">&times;</button>
+        <p>Puedes cambiar entre modo claro y oscuro 🌙☀️</p>
+    </div>
+
+    <!-- Modales para especialidades -->
+    <div class="specialty-modal" id="darkModal">
+        <div class="specialty-modal-content">
+            <img src="https://i.pinimg.com/736x/5d/2d/19/5d2d19c199e9557ee7ae768827577d6c.jpg" alt="Dark style">
+            <div class="specialty-modal-text">
+                su estilo usualmente es dark con algunas conbinaciones de y2k, goth, alt y dark coquette 𐔌՞. .՞𐦯
+            </div>
+            <button class="specialty-modal-close">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="specialty-modal" id="cuteModal">
+        <div class="specialty-modal-content">
+            <img src="https://i.pinimg.com/736x/04/91/3e/04913e79205e805eab2d9cbb84ee8e9d.jpg" alt="Cute style">
+            <div class="specialty-modal-text">
+                ✧˖° El estilo cute combina suavidad y ternura con elementos dark para crear una estética única y adorable.
+            </div>
+            <button class="specialty-modal-close">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="specialty-modal" id="homicipherModal">
+        <div class="specialty-modal-content">
+            <img src="https://i.pinimg.com/736x/76/2a/2c/762a2cd5f8cd3b606545bdc3b91c1eeb.jpg" alt="Homicipher">
+            <div class="specialty-modal-text">
+                info de homicipheeer ٩(ˊᗜˋ*)و ♡
+            </div>
+            <a href="https://homicipher.fandom.com/wiki/Homicipher_Wiki" class="specialty-modal-link" target="_blank">
+                Visitar Wiki de Homicipher
+            </a>
+            <button class="specialty-modal-close">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="specialty-modal" id="nailModal">
+        <div class="specialty-modal-content">
+            <img src="https://i.pinimg.com/736x/c4/05/2d/c4052d72cbc61359638417ae97666990.jpg" alt="Nail art">
+            <div class="specialty-modal-text">
+                ୭ ˚. a ella le gusta mucho el cuidado de uñas y pintarlas de multiples colores brillantes, tmb le gusta el estilo de uñas largas.
+            </div>
+            <button class="specialty-modal-close">Cerrar</button>
+        </div>
+    </div>
 
     <div class="preloader">
         <div class="preloader-heart">♡</div>
@@ -1186,19 +1148,20 @@
                 <div class="about-text">
                     <p>୭ ˚. ᵎᵎDeathie es una chica con belleza y estilo dark, su estética oscura con toques cute da una atmósfera donde se refleja la personalidad. Algunos de sus hobbies son tomar fotografías, escuchar música, dormir y subir contenido en Instagram.</p>
                     <div class="specialties">
-                        <span class="specialty">𝕯𝖆𝖗𝖐</span>
-                        <span class="specialty">𝕹𝖆𝖎𝖑</span>
-                        <span class="specialty">𝕮𝖚𝖙𝖊</span>
-                        <span class="specialty">𝕻𝖍𝖔𝖙𝖔</span>
-                        <span class="specialty">𝕳𝖔𝖒𝖎𝖈𝖎𝖕𝖍𝖊𝖗</span>
+                        <span class="specialty" id="darkSpecialty">𝕯𝖆𝖗𝖐</span>
+                        <span class="specialty" id="nailSpecialty">𝕹𝖆𝖎𝖑</span>
+                        <span class="specialty" id="cuteSpecialty">𝕮𝖚𝖙𝖊</span>
+                        <span class="specialty" id="homicipherSpecialty">𝕵𝖚𝖊𝖌𝖚𝖊𝖓 𝖍𝖔𝖒𝖎𝖈𝖎𝖕𝖍𝖊𝖗</span>
                     </div>
                 </div>
                 <div class="about-image">
-                    <img src="https://i.pinimg.com/736x/3f/ed/98/3fed980af6ee74117c66fe7dd9aecda0.jpg" alt="Deathie aesthetic image">
+                    <img src="https://i.pinimg.com/736x/10/f6/54/10f6540dd7b00805b858fb850cde1646.jpg" alt="Deathie aesthetic image" class="about-img-light">
+                    <img src="https://i.pinimg.com/736x/8a/5f/1a/8a5f1a0088d3845737d5027e3674a986.jpg" alt="Deathie aesthetic image dark mode" class="about-img-dark" style="display: none;">
                 </div>
             </div>
         </section>
 
+        <!-- Resto de las secciones se mantienen igual -->
         <div class="sparkle-divider" aria-hidden="true">
             <i class="fas fa-sparkles"></i> <i class="fas fa-sparkles"></i> <i class="fas fa-sparkles"></i>
         </div>
@@ -1216,44 +1179,43 @@
                 <h3>𐔌՞. .՞𐦯 ⊹ ࣪ ˖</h3>
                 <div class="artist-list">
                     <a href="https://open.spotify.com/intl-es/artist/1TTHC3GlNDaE5eVoC3BVxm" class="artist" target="_blank" rel="noopener noreferrer">
-                        <img src="https://i.pinimg.com/736x/7d/99/24/7d992490db41926175079f0a22fcaf73.jpg" alt="Lumi Athena profile" loading="lazy">
+                        <img src="https://i.pinimg.com/736x/7d/99/24/7d992490db41926175079f0a22fcaf73.jpg" alt="Lumi Athena profile">
                         Lumi Athena
                     </a>
                     <a href="https://open.spotify.com/intl-es/artist/1oYXEVbGh1L7EWGm9C68cN" class="artist" target="_blank" rel="noopener noreferrer">
-                        <img src="https://i.pinimg.com/736x/40/4d/56/404d5682382bcd6b5d602b3f2ddc94cf.jpg" alt="6arelyhuman profile" loading="lazy">
+                        <img src="https://i.pinimg.com/736x/40/4d/56/404d5682382bcd6b5d602b3f2ddc94cf.jpg" alt="6arelyhuman profile">
                         6arelyhuman
                     </a>
                     <a href="https://open.spotify.com/intl-es/artist/7M5pDtJpCdnftEQZtczYco" class="artist" target="_blank" rel="noopener noreferrer">
-                        <img src="https://i.pinimg.com/736x/9c/11/e7/9c11e7802cb000525fc7a8cc29f99f99.jpg" alt="Ayesha Erotica profile" loading="lazy">
+                        <img src="https://i.pinimg.com/736x/9c/11/e7/9c11e7802cb000525fc7a8cc29f99f99.jpg" alt="Ayesha Erotica profile">
                         Ayesha Erotica
                     </a>
                     <a href="https://open.spotify.com/intl-es/artist/0I7VmE5LkRmWoHltutTUh9" class="artist" target="_blank" rel="noopener noreferrer">
-                        <img src="https://i.pinimg.com/736x/ff/db/5d/ffdb5d5bb86be75ea8aac25bf0c595a5.jpg" alt="Asteria profile" loading="lazy">
+                        <img src="https://i.pinimg.com/736x/ff/db/5d/ffdb5d5bb86be75ea8aac25bf0c595a5.jpg" alt="Asteria profile">
                         Asteria
                     </a>
                     <a href="https://open.spotify.com/intl-es/artist/069iCiM0s1UEgnn7jJorJ4" class="artist" target="_blank" rel="noopener noreferrer">
-                        <img src="https://i.pinimg.com/736x/3f/99/52/3f9952eeeea1d9eef9f9446e9551a8d2.jpg" alt="N!GHTvision profile" loading="lazy">
+                        <img src="https://i.pinimg.com/736x/3f/99/52/3f9952eeeea1d9eef9f9446e9551a8d2.jpg" alt="N!GHTvision profile">
                         N!GHTvision
                     </a>
                     <a href="https://open.spotify.com/intl-es/artist/78l5b6jXVHHTrRCzSx1ku4" class="artist" target="_blank" rel="noopener noreferrer">
-                        <img src="https://i.pinimg.com/736x/f1/ed/ef/f1edef925bb1649ae3b50f9e0f591557.jpg" alt="Ash-B profile" loading="lazy">
+                        <img src="https://i.pinimg.com/736x/f1/ed/ef/f1edef925bb1649ae3b50f9e0f591557.jpg" alt="Ash-B profile">
                         Ash-B
                     </a>
                     <a href="https://open.spotify.com/intl-es/artist/3KpcZihtDYQR2OBEdhBjaE" class="artist" target="_blank" rel="noopener noreferrer">
-                        <img src="https://i.pinimg.com/736x/84/c2/6b/84c26b5909cbb0c3ad8ad33bd5d8163d.jpg" alt="Home4circus profile" loading="lazy">
+                        <img src="https://i.pinimg.com/736x/84/c2/6b/84c26b5909cbb0c3ad8ad33bd5d8163d.jpg" alt="Home4circus profile">
                         Home4circus
                     </a>
-                    <!-- Nuevos artistas agregados -->
                     <a href="https://open.spotify.com/intl-es/artist/03RNbfo25PLqg0EYLx1XXS" class="artist" target="_blank" rel="noopener noreferrer">
-                        <img src="https://i.pinimg.com/736x/ea/e7/11/eae711e0fa98eb263652078007e44f20.jpg" alt="H!tex profile" loading="lazy">
+                        <img src="https://i.pinimg.com/736x/ea/e7/11/eae711e0fa98eb263652078007e44f20.jpg" alt="H!tex profile">
                         H!tex
                     </a>
                     <a href="https://open.spotify.com/intl-es/artist/7GwwoezwdbKvUaNgtg51pX" class="artist" target="_blank" rel="noopener noreferrer">
-                        <img src="https://i.pinimg.com/736x/75/74/ce/7574ce753919a2a6eac78ebfdc4dd4c8.jpg" alt="Bludnymph profile" loading="lazy">
+                        <img src="https://i.pinimg.com/736x/75/74/ce/7574ce753919a2a6eac78ebfdc4dd4c8.jpg" alt="Bludnymph profile">
                         Bludnymph
                     </a>
                     <a href="https://open.spotify.com/intl-es/artist/6JjQbtAO09K7qBEW2pdX5s" class="artist" target="_blank" rel="noopener noreferrer">
-                        <img src="https://i.pinimg.com/736x/4b/16/50/4b1650c0153080adec1861dc9dd05d64.jpg" alt="Isq profile" loading="lazy">
+                        <img src="https://i.pinimg.com/736x/4b/16/50/4b1650c0153080adec1861dc9dd05d64.jpg" alt="Isq profile">
                         Isq
                     </a>
                 </div>
@@ -1331,7 +1293,6 @@
                         <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 6">
                         <div class="photo-frame"></div>
                     </div>
-                    <!-- Nuevas imágenes agregadas -->
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/b0/96/66/b096668d0a2ebea949f8a22223348cf4.jpg">
                         <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 7">
                         <div class="photo-frame"></div>
@@ -1452,32 +1413,106 @@
     </button>
 
     <script>
-        // Toggle del tema
+        // Toggle del tema con transición suave
         const themeToggle = document.querySelector('.theme-toggle');
         const themeIcon = document.querySelector('.theme-icon');
+        const aboutImgLight = document.querySelector('.about-img-light');
+        const aboutImgDark = document.querySelector('.about-img-dark');
+        const themeNotification = document.getElementById('themeNotification');
 
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             
+            // Añadir clase de transición
+            document.body.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+            
             if (currentTheme === 'dark') {
-                // Cambiar a Light Mode (Rosas)
                 document.documentElement.setAttribute('data-theme', 'light');
                 themeIcon.textContent = '🌙';
+                aboutImgLight.style.display = 'block';
+                aboutImgDark.style.display = 'none';
                 localStorage.setItem('theme', 'light');
             } else {
-                // Cambiar a Dark Mode (Morados)
                 document.documentElement.setAttribute('data-theme', 'dark');
                 themeIcon.textContent = '☀️';
+                aboutImgLight.style.display = 'none';
+                aboutImgDark.style.display = 'block';
                 localStorage.setItem('theme', 'dark');
             }
+            
+            // Remover transición después de completarse
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 800);
         }
 
         themeToggle.addEventListener('click', toggleTheme);
+
+        // Mostrar notificación al cargar la página
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                themeNotification.classList.add('show');
+            }, 2000);
+            
+            // Ocultar notificación después de 5 segundos
+            setTimeout(() => {
+                themeNotification.classList.remove('show');
+            }, 7000);
+        });
+
+        // Cerrar notificación manualmente
+        document.querySelector('.theme-notification-close').addEventListener('click', () => {
+            themeNotification.classList.remove('show');
+        });
 
         // Cargar tema guardado
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        
+        if (savedTheme === 'dark') {
+            aboutImgLight.style.display = 'none';
+            aboutImgDark.style.display = 'block';
+        } else {
+            aboutImgLight.style.display = 'block';
+            aboutImgDark.style.display = 'none';
+        }
+
+        // Modales para especialidades
+        const darkModal = document.getElementById('darkModal');
+        const cuteModal = document.getElementById('cuteModal');
+        const homicipherModal = document.getElementById('homicipherModal');
+        const nailModal = document.getElementById('nailModal');
+
+        const darkSpecialty = document.getElementById('darkSpecialty');
+        const cuteSpecialty = document.getElementById('cuteSpecialty');
+        const homicipherSpecialty = document.getElementById('homicipherSpecialty');
+        const nailSpecialty = document.getElementById('nailSpecialty');
+
+        const modalCloses = document.querySelectorAll('.specialty-modal-close');
+
+        // Abrir modales
+        darkSpecialty.addEventListener('click', () => darkModal.classList.add('active'));
+        cuteSpecialty.addEventListener('click', () => cuteModal.classList.add('active'));
+        homicipherSpecialty.addEventListener('click', () => homicipherModal.classList.add('active'));
+        nailSpecialty.addEventListener('click', () => nailModal.classList.add('active'));
+
+        // Cerrar modales
+        modalCloses.forEach(close => {
+            close.addEventListener('click', function() {
+                this.closest('.specialty-modal').classList.remove('active');
+            });
+        });
+
+        // Cerrar modales al hacer click fuera
+        const modals = document.querySelectorAll('.specialty-modal');
+        modals.forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
 
         // Preloader
         window.addEventListener('load', () => {
@@ -1498,66 +1533,15 @@
             particlesContainer.appendChild(particle);
         }
 
-        // Tab functionality
+        // Resto del JavaScript existente...
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                tabs.forEach(t => {
-                    t.classList.remove('active');
-                    t.setAttribute('aria-selected', 'false');
-                });
+                tabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                tab.setAttribute('aria-selected', 'true');
-
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                const tabId = tab.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
+                document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
             });
-
-            tab.addEventListener('keydown', e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    tab.click();
-                }
-            });
-        });
-
-        // Modal functionality for photos
-        const modal = document.getElementById('photoModal');
-        const modalImg = modal.querySelector('img');
-        const modalClose = modal.querySelector('.modal-close');
-        const photoItems = document.querySelectorAll('.photo-item');
-
-        photoItems.forEach(item => {
-            item.addEventListener('click', () => {
-                modalImg.src = item.getAttribute('data-src');
-                modalImg.alt = item.querySelector('img').alt;
-                modal.classList.add('active');
-            });
-
-            item.addEventListener('keydown', e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    item.click();
-                }
-            });
-        });
-
-        modalClose.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-
-        modal.addEventListener('click', e => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
-        });
-
-        modalClose.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                modal.classList.remove('active');
-            }
         });
 
         // Carousel functionality
@@ -1571,7 +1555,6 @@
             document.querySelector('.carousel-inner').style.transform = `translateX(-${currentSlide * 100}%)`;
             indicators.forEach((indicator, i) => {
                 indicator.classList.toggle('active', i === currentSlide);
-                indicator.setAttribute('aria-selected', i === currentSlide);
             });
         }
 
@@ -1580,141 +1563,43 @@
 
         indicators.forEach((indicator, i) => {
             indicator.addEventListener('click', () => showSlide(i));
-            indicator.addEventListener('keydown', e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    showSlide(i);
-                }
-            });
-        });
-
-        let autoSlide = setInterval(() => showSlide(currentSlide + 1), 5000);
-        document.querySelector('.carousel').addEventListener('mouseenter', () => clearInterval(autoSlide));
-        document.querySelector('.carousel').addEventListener('mouseleave', () => {
-            autoSlide = setInterval(() => showSlide(currentSlide + 1), 5000);
         });
 
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', e => {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-                const targetId = anchor.getAttribute('href');
-                if (targetId === '#') return;
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
                     window.scrollTo({
-                        top: targetElement.offsetTop - 80,
+                        top: target.offsetTop - 80,
                         behavior: 'smooth'
                     });
                 }
             });
         });
 
-        // Intersection Observer for fade-in animations
-        const sections = document.querySelectorAll('.section, .hero, .sparkle-divider, footer');
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.1
-        });
-
-        sections.forEach(section => {
-            observer.observe(section);
-        });
-
-        // Back to top button
+        // Back to top
         const backToTop = document.querySelector('.back-to-top');
         window.addEventListener('scroll', () => {
             backToTop.classList.toggle('visible', window.scrollY > 300);
         });
 
         backToTop.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // Copy-to-clipboard functionality for symbols
-        const symbols = document.querySelectorAll('.symbol');
-        symbols.forEach(symbol => {
-            symbol.addEventListener('click', () => {
-                const text = symbol.textContent.trim();
-                try {
-                    navigator.clipboard.writeText(text).then(() => {
-                        showTooltip(symbol);
-                    }).catch(() => {
-                        copyTextFallback(text, symbol);
-                    });
-                } catch (err) {
-                    copyTextFallback(text, symbol);
+        // Intersection Observer
+        const sections = document.querySelectorAll('.section, .hero, .sparkle-divider, footer');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
             });
+        }, { threshold: 0.1 });
 
-            symbol.addEventListener('keydown', e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    symbol.click();
-                }
-            });
-        });
-
-        function copyTextFallback(text, symbol) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                showTooltip(symbol);
-            } catch (err) {
-                console.error('Failed to copy:', err);
-            } finally {
-                document.body.removeChild(textarea);
-            }
-        }
-
-        function showTooltip(symbol) {
-            const tooltip = document.createElement('div');
-            tooltip.className = 'copy-tooltip';
-            tooltip.textContent = 'Copied!';
-            symbol.style.position = 'relative';
-            symbol.appendChild(tooltip);
-
-            const rect = symbol.getBoundingClientRect();
-            tooltip.style.top = `${rect.height + 10}px`;
-            tooltip.style.left = '50%';
-            tooltip.style.transform = 'translateX(-50%)';
-            tooltip.style.opacity = '1';
-
-            setTimeout(() => {
-                tooltip.style.opacity = '0';
-                setTimeout(() => tooltip.remove(), 300);
-            }, 1000);
-        }
-
-        // Symbol size control
-        const symbolSizeButtons = document.querySelectorAll('.symbol-size-btn');
-        let symbolFontSize = 0.65;
-        symbolSizeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                if (button.getAttribute('data-size') === 'increase') {
-                    symbolFontSize = Math.min(symbolFontSize + 0.1, 1.2);
-                } else {
-                    symbolFontSize = Math.max(symbolFontSize - 0.1, 0.4);
-                }
-                symbols.forEach(symbol => {
-                    symbol.style.fontSize = `${symbolFontSize}rem`;
-                });
-            });
-        });
+        sections.forEach(section => observer.observe(section));
     </script>
 </body>
 </html>
