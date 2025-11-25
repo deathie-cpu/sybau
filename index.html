@@ -326,6 +326,22 @@
             background: linear-gradient(45deg, rgba(157, 78, 221, 0.2), rgba(199, 125, 255, 0.2));
         }
 
+        /* NUEVO: Imagen de fondo actualizada */
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://i.pinimg.com/736x/51/0e/9a/510e9a309650e0f09784536cc615a311.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
         /* Transición suave para el cambio de tema */
         body, .social-link, .specialty, .tab, .app-icon, .name, .section-title {
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -417,21 +433,6 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.2); }
             100% { transform: scale(1); }
-        }
-
-        .background-image {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://i.pinimg.com/736x/34/17/db/3417dbcab8fd479fee30ef8388f31030.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            z-index: -1;
-            opacity: 0.3;
         }
 
         header {
@@ -1384,6 +1385,7 @@
     <div class="preloader">
         <div class="preloader-heart">♡</div>
     </div>
+    <!-- NUEVA IMAGEN DE FONDO -->
     <div class="background-image"></div>
     <div class="particles" id="particles"></div>
 
