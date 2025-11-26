@@ -137,27 +137,44 @@
         .volume-slider {
             flex: 1;
             -webkit-appearance: none;
-            height: 4px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
+            border-radius: 10px;
             outline: none;
+            cursor: pointer;
         }
 
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: var(--primary-color);
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: var(--secondary-color);
         }
 
         .volume-percentage {
             font-size: 0.8rem;
             color: var(--text-dark);
-            min-width: 30px;
+            min-width: 35px;
             text-align: center;
             font-family: 'Times New Roman', serif;
+            font-weight: bold;
+        }
+
+        .volume-icon {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .volume-icon:hover {
+            color: var(--primary-color);
         }
 
         .playlist {
@@ -209,6 +226,144 @@
         }
 
         .music-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* NUEVO: Modal para fotos */
+        .photo-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .photo-modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .photo-modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo-modal img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            object-fit: contain;
+        }
+
+        .photo-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .photo-modal-close:hover {
+            transform: scale(1.1);
+            background: var(--secondary-color);
+        }
+
+        .photo-modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .photo-modal-nav:hover {
+            background: var(--primary-color);
+        }
+
+        .photo-modal-prev {
+            left: 20px;
+        }
+
+        .photo-modal-next {
+            right: 20px;
+        }
+
+        .photo-modal-counter {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-family: 'Times New Roman', serif;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        /* Loading para fotos */
+        .photo-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--primary-color);
+            font-size: 2rem;
+            display: none;
+        }
+
+        /* Mejoras para las fotos en la galería */
+        .photo-item {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-item img {
+            transition: transform 0.5s ease;
+        }
+
+        .photo-item:hover img {
             transform: scale(1.1);
         }
 
@@ -1282,10 +1437,38 @@
                 padding: 15px;
                 min-height: 100px;
             }
+
+            .photo-modal-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .photo-modal-prev {
+                left: 10px;
+            }
+
+            .photo-modal-next {
+                right: 10px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- NUEVO: Modal para fotos -->
+    <div class="photo-modal" id="photoModal">
+        <div class="photo-modal-content">
+            <button class="photo-modal-close" id="modalClose">&times;</button>
+            <button class="photo-modal-nav photo-modal-prev" id="modalPrev">&#10094;</button>
+            <button class="photo-modal-nav photo-modal-next" id="modalNext">&#10095;</button>
+            <div class="photo-loading" id="photoLoading">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <img id="modalImage" src="" alt="Full size photo">
+            <div class="photo-modal-counter" id="photoCounter">1 / 11</div>
+        </div>
+    </div>
+
     <!-- NUEVO: Reproductor de música -->
     <div class="music-player" id="musicPlayer">
         <div class="music-header">
@@ -1549,47 +1732,47 @@
                 <h3>⋅˚₊‧ 𐙚 ‧₊˚ ⋅</h3>
                 <div class="photos-gallery">
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/35/98/80/359880715c0a698dc74a02494940376f.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 1">
+                        <img src="https://i.pinimg.com/736x/35/98/80/359880715c0a698dc74a02494940376f.jpg" alt="Dark aesthetic photo 1">
                         <div class="photo-frame"></div>
                     </div>
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/49/58/09/495809f08d2ad55e8e9d23215d156f00.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 2">
+                        <img src="https://i.pinimg.com/736x/49/58/09/495809f08d2ad55e8e9d23215d156f00.jpg" alt="Dark aesthetic photo 2">
                         <div class="photo-frame"></div>
                     </div>
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/42/bd/b0/42bdb0bae63e677d624a6412fc7e7106.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 3">
+                        <img src="https://i.pinimg.com/736x/42/bd/b0/42bdb0bae63e677d624a6412fc7e7106.jpg" alt="Dark aesthetic photo 3">
                         <div class="photo-frame"></div>
                     </div>
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/f9/7a/2a/f97a2a9a63dec9c844dedf12fbd3a033.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 4">
+                        <img src="https://i.pinimg.com/736x/f9/7a/2a/f97a2a9a63dec9c844dedf12fbd3a033.jpg" alt="Dark aesthetic photo 4">
                         <div class="photo-frame"></div>
                     </div>
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/ce/fd/2e/cefd2ec2deae1655ea9ddcff998335fd.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 5">
+                        <img src="https://i.pinimg.com/736x/ce/fd/2e/cefd2ec2deae1655ea9ddcff998335fd.jpg" alt="Dark aesthetic photo 5">
                         <div class="photo-frame"></div>
                     </div>
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/20/24/39/2024393039c59c9806a295171232fecb.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 6">
+                        <img src="https://i.pinimg.com/736x/20/24/39/2024393039c59c9806a295171232fecb.jpg" alt="Dark aesthetic photo 6">
                         <div class="photo-frame"></div>
                     </div>
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/b0/96/66/b096668d0a2ebea949f8a22223348cf4.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 7">
+                        <img src="https://i.pinimg.com/736x/b0/96/66/b096668d0a2ebea949f8a22223348cf4.jpg" alt="Dark aesthetic photo 7">
                         <div class="photo-frame"></div>
                     </div>
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/7a/65/aa/7a65aa46e43ffd7b0c68a0652ae5b032.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 8">
+                        <img src="https://i.pinimg.com/736x/7a/65/aa/7a65aa46e43ffd7b0c68a0652ae5b032.jpg" alt="Dark aesthetic photo 8">
                         <div class="photo-frame"></div>
                     </div>
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/15/59/8a/15598a2d7fa08ec5d26160110f3ec463.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 9">
+                        <img src="https://i.pinimg.com/736x/15/59/8a/15598a2d7fa08ec5d26160110f3ec463.jpg" alt="Dark aesthetic photo 9">
                         <div class="photo-frame"></div>
                     </div>
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/f9/b0/64/f9b0647be3b1ec7d611ad49f561102ed.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 10">
+                        <img src="https://i.pinimg.com/736x/f9/b0/64/f9b0647be3b1ec7d611ad49f561102ed.jpg" alt="Dark aesthetic photo 10">
                         <div class="photo-frame"></div>
                     </div>
                     <div class="photo-item" data-src="https://i.pinimg.com/736x/bc/90/9f/bc909f5bcb5627da803b860465d3160b.jpg">
-                        <img src="https://i.pinimg.com/736x/85/ac/db/85acdbb5f9105874c32edbef9b26ea01.jpg" alt="Dark aesthetic photo 11">
+                        <img src="https://i.pinimg.com/736x/bc/90/9f/bc909f5bcb5627da803b860465d3160b.jpg" alt="Dark aesthetic photo 11">
                         <div class="photo-frame"></div>
                     </div>
                 </div>
@@ -1682,11 +1865,6 @@
         <p class="footer-text">Dark & Cute Aesthetic</p>
     </footer>
 
-    <div class="modal" id="photoModal" role="dialog" aria-label="Full-screen photo viewer">
-        <button class="modal-close" aria-label="Close photo viewer">&times;</button>
-        <img src="" alt="Full-screen photo">
-    </div>
-
     <button class="back-to-top" aria-label="Back to top">
         <i class="fas fa-arrow-up"></i>
     </button>
@@ -1702,6 +1880,123 @@
     </iframe>
 
     <script>
+        // NUEVO: Sistema de galería de fotos mejorado
+        const photoModal = document.getElementById('photoModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalClose = document.getElementById('modalClose');
+        const modalPrev = document.getElementById('modalPrev');
+        const modalNext = document.getElementById('modalNext');
+        const photoLoading = document.getElementById('photoLoading');
+        const photoCounter = document.getElementById('photoCounter');
+        const photoItems = document.querySelectorAll('.photo-item');
+
+        // Array con las URLs reales de las fotos
+        const photoUrls = [
+            'https://i.pinimg.com/736x/35/98/80/359880715c0a698dc74a02494940376f.jpg',
+            'https://i.pinimg.com/736x/49/58/09/495809f08d2ad55e8e9d23215d156f00.jpg',
+            'https://i.pinimg.com/736x/42/bd/b0/42bdb0bae63e677d624a6412fc7e7106.jpg',
+            'https://i.pinimg.com/736x/f9/7a/2a/f97a2a9a63dec9c844dedf12fbd3a033.jpg',
+            'https://i.pinimg.com/736x/ce/fd/2e/cefd2ec2deae1655ea9ddcff998335fd.jpg',
+            'https://i.pinimg.com/736x/20/24/39/2024393039c59c9806a295171232fecb.jpg',
+            'https://i.pinimg.com/736x/b0/96/66/b096668d0a2ebea949f8a22223348cf4.jpg',
+            'https://i.pinimg.com/736x/7a/65/aa/7a65aa46e43ffd7b0c68a0652ae5b032.jpg',
+            'https://i.pinimg.com/736x/15/59/8a/15598a2d7fa08ec5d26160110f3ec463.jpg',
+            'https://i.pinimg.com/736x/f9/b0/64/f9b0647be3b1ec7d611ad49f561102ed.jpg',
+            'https://i.pinimg.com/736x/bc/90/9f/bc909f5bcb5627da803b860465d3160b.jpg'
+        ];
+
+        let currentPhotoIndex = 0;
+
+        // Función para abrir el modal con una foto específica
+        function openPhotoModal(index) {
+            currentPhotoIndex = index;
+            photoModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+            loadPhoto(currentPhotoIndex);
+            updatePhotoCounter();
+        }
+
+        // Función para cargar una foto
+        function loadPhoto(index) {
+            if (index >= 0 && index < photoUrls.length) {
+                photoLoading.style.display = 'block';
+                modalImage.style.display = 'none';
+                
+                const img = new Image();
+                img.onload = function() {
+                    modalImage.src = photoUrls[index];
+                    modalImage.alt = `Photo ${index + 1}`;
+                    modalImage.style.display = 'block';
+                    photoLoading.style.display = 'none';
+                };
+                img.onerror = function() {
+                    photoLoading.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error loading image';
+                    setTimeout(() => {
+                        photoModal.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }, 2000);
+                };
+                img.src = photoUrls[index];
+            }
+        }
+
+        // Función para actualizar el contador
+        function updatePhotoCounter() {
+            photoCounter.textContent = `${currentPhotoIndex + 1} / ${photoUrls.length}`;
+        }
+
+        // Función para navegar a la siguiente foto
+        function nextPhoto() {
+            currentPhotoIndex = (currentPhotoIndex + 1) % photoUrls.length;
+            loadPhoto(currentPhotoIndex);
+            updatePhotoCounter();
+        }
+
+        // Función para navegar a la foto anterior
+        function prevPhoto() {
+            currentPhotoIndex = (currentPhotoIndex - 1 + photoUrls.length) % photoUrls.length;
+            loadPhoto(currentPhotoIndex);
+            updatePhotoCounter();
+        }
+
+        // Event listeners para las fotos
+        photoItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                openPhotoModal(index);
+            });
+        });
+
+        // Event listeners para los controles del modal
+        modalClose.addEventListener('click', () => {
+            photoModal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        modalNext.addEventListener('click', nextPhoto);
+        modalPrev.addEventListener('click', prevPhoto);
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (photoModal.classList.contains('active')) {
+                if (e.key === 'Escape') {
+                    photoModal.classList.remove('active');
+                    document.body.style.overflow = '';
+                } else if (e.key === 'ArrowRight') {
+                    nextPhoto();
+                } else if (e.key === 'ArrowLeft') {
+                    prevPhoto();
+                }
+            }
+        });
+
+        // Cerrar modal al hacer click fuera de la imagen
+        photoModal.addEventListener('click', (e) => {
+            if (e.target === photoModal) {
+                photoModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
         // NUEVO: Sistema de música mejorado
         const musicPlayer = document.getElementById('musicPlayer');
         const musicToggle = document.getElementById('musicToggle');
@@ -1719,12 +2014,6 @@
         let isMinimized = false;
         let currentTrack = 0;
         const tracks = ['S1yika93S40', 'EZy1FbXPjDk', 'JkBJQYn_WfI', 'InWbkO9Y-mg'];
-        const trackNames = [
-            'ʚ🍓ɞ strawberry sparkles! ° 𝐿𝑢𝑚𝑖 𝑎𝑡ℎ𝑒𝑛𝑎',
-            '.𖥔 ݁ ˖ 花店 ° 𝐿𝑒𝑥𝑦𝑐𝑎𝑡', 
-            '꩜.ᐟ cassette ° 𝐿𝑒𝑥𝑦𝑐𝑎𝑡',
-            '૮ ․ ․ ྀིა strange ° 𝑆𝑈𝐺𝐴'
-        ];
 
         // Inicializar volumen
         backgroundMusic.volume = 0.5;
